@@ -20,7 +20,7 @@ spring:
       path: /h2
       settings:
         web-allow-others: true
-  sql:
-    init:
-      schema-locations: classpath:datasource/schema.sql
-      data-locations: classpath:datasource/data.sql
+#  sql:
+#    init:
+#      schema-locations: classpath:test-db/schema.sql
+#      data-locations: classpath:test-db/data.sql
