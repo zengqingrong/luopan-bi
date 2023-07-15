@@ -35,6 +35,8 @@ public class CodeGenerator {
         });
         autoGenerator.packageConfig(builder -> {
             builder.parent("org.luopanbi.dal") // 设置父包名
+                    .service("dao")
+                    .serviceImpl("dao.impl")
                     .pathInfo(pathInfo); // 设置mapperXml生成路径
 
         });
@@ -42,7 +44,7 @@ public class CodeGenerator {
             builder.disable(TemplateType.CONTROLLER);
         });
         autoGenerator.strategyConfig(builder -> {
-            builder.addInclude("dataset","column_info"); // 设置需要生成的表名
+            builder.addInclude("dataset", "column_info"); // 设置需要生成的表名
             builder.serviceBuilder().convertServiceFileName(entityName -> entityName + "DAO");
             builder.serviceBuilder().convertServiceImplFileName(entityName -> entityName + "DAOImpl");
             builder.entityBuilder().enableLombok();
