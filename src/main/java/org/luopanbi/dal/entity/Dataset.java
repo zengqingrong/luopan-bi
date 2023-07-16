@@ -38,6 +38,17 @@ public class Dataset implements Serializable {
     private String showName;
 
     /**
+     * 数据源类型
+     * @see org.luopanbi.business.dataset.constant.DatasetType
+     */
+    private String type;
+
+    /**
+     * 虚拟表sql
+     */
+    private String virtualSql;
+
+    /**
      * 描述信息
      */
     private String description;
