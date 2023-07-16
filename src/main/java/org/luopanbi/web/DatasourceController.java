@@ -7,6 +7,7 @@ import org.luopanbi.common.web.PageResult;
 import org.luopanbi.common.web.R;
 import org.luopanbi.web.vo.AddDatasourceReq;
 import org.luopanbi.web.vo.DatasourceVO;
+import org.luopanbi.web.vo.EditDatasourceReq;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,5 +35,16 @@ public class DatasourceController {
         return R.ok(datasourceVO);
     }
 
+    @PostMapping("/{id}")
+    public R<DatasourceVO> editDatasource(@PathVariable("id") Integer id, @Valid @RequestBody EditDatasourceReq editDatasourceReq) {
+        DatasourceVO datasourceVO = datasourceBizService.editDatasource(id, editDatasourceReq, UUID.randomUUID().toString());
+        return R.ok(datasourceVO);
+    }
+
+    @DeleteMapping("/{id}")
+    public R<DatasourceVO> deleteDatasource(@PathVariable("id") Integer id) {
+        DatasourceVO datasourceVO = datasourceBizService.deleteDatasource(id);
+        return R.ok(datasourceVO);
+    }
 
 }
