@@ -1,6 +1,7 @@
 package org.luopanbi.business.datasource;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.luopanbi.common.constant.ExceptionCode;
 import org.luopanbi.common.exception.CustomException;
 import org.luopanbi.common.utils.TimeUtil;
@@ -10,6 +11,7 @@ import org.luopanbi.converter.DatasourceConverter;
 import org.luopanbi.dal.dao.DatasourceDAO;
 import org.luopanbi.dal.entity.Datasource;
 import org.luopanbi.web.vo.AddDatasourceReq;
+import org.luopanbi.web.vo.DatasourceConnectionReq;
 import org.luopanbi.web.vo.DatasourceVO;
 import org.luopanbi.web.vo.EditDatasourceReq;
 import org.springframework.stereotype.Service;
@@ -17,8 +19,12 @@ import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 @Service
+@Slf4j
 public class DatasourceBizService {
 
     private final DatasourceDAO datasourceDAO;
@@ -40,6 +46,9 @@ public class DatasourceBizService {
             throw new CustomException(ExceptionCode.PARAM_ERROR, "数据源编码名重复");
         }
         Datasource datasource = DatasourceConverter.toDo(addDatasourceReq);
+        if (!connection(datasource)) {
+            throw new CustomException(ExceptionCode.PARAM_ERROR, "数据源连通异常");
+        }
         datasource.setCreatedAt(TimeUtil.now());
         datasource.setCreatedBy(userId);
         datasource.setUpdatedAt(TimeUtil.now());
@@ -71,6 +80,9 @@ public class DatasourceBizService {
         if (StringUtils.hasText(editDatasourceReq.getConnectionUrl())) {
             datasource.setConnectionUrl(editDatasourceReq.getConnectionUrl());
         }
+        if (!connection(datasource)) {
+            throw new CustomException(ExceptionCode.PARAM_ERROR, "数据源连通异常");
+        }
         datasource.setUpdatedAt(TimeUtil.now());
         datasource.setUpdatedBy(userId);
         datasourceDAO.updateById(datasource);
@@ -84,5 +96,34 @@ public class DatasourceBizService {
         }
         datasourceDAO.removeById(id);
         return DatasourceConverter.toVo(datasource);
+    }
+
+    public boolean connection(DatasourceConnectionReq datasourceConnectionReq) {
+        String url = datasourceConnectionReq.getUrl();
+        String username = datasourceConnectionReq.getUsername();
+        String password = datasourceConnectionReq.getPassword();
+        boolean result = false;
+        try (Connection connection = DriverManager.getConnection(url, username, password)) {
+            // 连接成功
+            result = true;
+        } catch (SQLException e) {
+            // 连接异常
+            result = false;
+            log.error("datasource connection has an error: ", e);
+        }
+        return result;
+    }
+
+    public boolean connection(Integer id) {
+        Datasource datasource = datasourceDAO.getById(id);
+        return connection(datasource);
+    }
+
+    private boolean connection(Datasource datasource) {
+        DatasourceConnectionReq datasourceConnectionReq = new DatasourceConnectionReq();
+        datasourceConnectionReq.setUrl(datasource.getConnectionUrl());
+        datasourceConnectionReq.setUsername(datasource.getUsername());
+        datasourceConnectionReq.setPassword(new String(Base64Utils.decodeFromString(datasource.getPassword())));
+        return connection(datasourceConnectionReq);
     }
 }

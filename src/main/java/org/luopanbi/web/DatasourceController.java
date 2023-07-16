@@ -6,6 +6,7 @@ import org.luopanbi.common.web.PageParam;
 import org.luopanbi.common.web.PageResult;
 import org.luopanbi.common.web.R;
 import org.luopanbi.web.vo.AddDatasourceReq;
+import org.luopanbi.web.vo.DatasourceConnectionReq;
 import org.luopanbi.web.vo.DatasourceVO;
 import org.luopanbi.web.vo.EditDatasourceReq;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +46,18 @@ public class DatasourceController {
     public R<DatasourceVO> deleteDatasource(@PathVariable("id") Integer id) {
         DatasourceVO datasourceVO = datasourceBizService.deleteDatasource(id);
         return R.ok(datasourceVO);
+    }
+
+    @PostMapping("/connect")
+    public R<Boolean> connectionDatasource(@Valid @RequestBody DatasourceConnectionReq datasourceConnectionReq) {
+        boolean result = datasourceBizService.connection(datasourceConnectionReq);
+        return R.ok(result);
+    }
+
+    @PostMapping("/{id}/connect")
+    public R<Boolean> connectionDatasource(@PathVariable Integer id) {
+        boolean result = datasourceBizService.connection(id);
+        return R.ok(result);
     }
 
 }
