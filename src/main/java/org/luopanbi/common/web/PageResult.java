@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -18,12 +20,12 @@ public class PageResult<T> {
 
     public List<T> result;
 
-    public static <K> PageResult<K> from(Page<K> page) {
+    public static <K, V> PageResult<K> from(Page<V> page, Function<V, K> convert) {
         PageResult<K> pageResult = new PageResult<>();
         pageResult.setTotal((int) page.getTotal());
         pageResult.setCurrent((int) page.getCurrent());
         pageResult.setSize((int) page.getSize());
-        pageResult.setResult(page.getRecords());
+        pageResult.setResult(page.getRecords().stream().map(convert::apply).collect(Collectors.toList()));
         return pageResult;
     }
 }

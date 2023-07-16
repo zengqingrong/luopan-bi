@@ -1,5 +1,7 @@
 package org.luopanbi.dal.dao.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.luopanbi.dal.entity.Datasource;
 import org.luopanbi.dal.mapper.DatasourceMapper;
 import org.luopanbi.dal.dao.DatasourceDAO;
@@ -8,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author luopan
@@ -16,5 +18,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DatasourceDAOImpl extends ServiceImpl<DatasourceMapper, Datasource> implements DatasourceDAO {
-
+    @Override
+    public Datasource getByName(String name) {
+        QueryWrapper<Datasource> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(Datasource::getName, name);
+        return this.getOne(queryWrapper);
+    }
 }
