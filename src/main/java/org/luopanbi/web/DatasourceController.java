@@ -18,7 +18,7 @@ import java.util.UUID;
 @RequestMapping("/datasource/v1")
 public class DatasourceController {
 
-    private DatasourceBizService datasourceBizService;
+    private final DatasourceBizService datasourceBizService;
 
     public DatasourceController(DatasourceBizService datasourceBizService) {
         this.datasourceBizService = datasourceBizService;
