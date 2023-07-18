@@ -2,14 +2,19 @@ package org.luopanbi.dal.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
+
 import lombok.Getter;
 import lombok.Setter;
+import org.luopanbi.business.dataset.constant.DatasetType;
+import org.springframework.util.StringUtils;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author luopan
@@ -39,6 +44,7 @@ public class Dataset implements Serializable {
 
     /**
      * 数据源类型
+     *
      * @see org.luopanbi.business.dataset.constant.DatasetType
      */
     private String type;
@@ -77,4 +83,8 @@ public class Dataset implements Serializable {
      * 更新时间
      */
     private LocalDateTime updatedAt;
+
+    public boolean isVirtualTable() {
+        return Objects.equals(this.type, DatasetType.VIRTUAL.name());
+    }
 }

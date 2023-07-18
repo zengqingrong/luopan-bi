@@ -20,15 +20,8 @@ public class EditDatasetReq {
     /**
      * 展示名称
      */
-    @NotNull
-    @NotEmpty
     @Size(min = 1, max = 255)
     private String showName;
-
-    /**
-     * 虚拟表sql
-     */
-    private String virtualSql;
 
     /**
      * 描述信息
